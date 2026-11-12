@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06150d">
+<title>SHERBEK_WORKOUT | Coaching App</title>
+<style>
+:root{--bg:#06120b;--panel:#0b2114;--panel2:#102c1b;--line:#245a38;--green:#4ade80;--mint:#a7f3d0;--text:#effff3;--muted:#a9c9b2;--red:#fb7185;--gold:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#123b22 0,transparent 34%),linear-gradient(145deg,#020904,#071a0e 55%,#031008);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
+main{max-width:900px;margin:auto;padding:18px 14px 50px}.hero{padding:26px 16px;text-align:center;border:1px solid #317348;border-radius:24px;background:linear-gradient(135deg,#0b2b17,#081a10);box-shadow:0 0 30px #22c55e22}
+h1{font-size:clamp(25px,7vw,42px);margin:0 0 8px;white-space:normal;text-shadow:0 0 16px #22c55e}.tag{color:var(--green);font-size:12px;letter-spacing:2px;font-weight:bold}.muted{color:var(--muted);line-height:1.6;font-size:13px}
+.panel{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#0b2114ee,#07170dee);box-shadow:0 0 20px #22c55e0c}
+h2{font-size:20px;margin:0 0 14px}h3{font-size:16px;margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px}
+.card{padding:15px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,#12351f,#0a1c11);cursor:pointer;text-align:left;color:var(--text);min-height:90px}
+.card:hover{border-color:var(--green);box-shadow:0 0 17px #4ade8030}.card b{display:block;margin-bottom:7px}.price{color:var(--green);font-size:12px}
+input,textarea,select{width:100%;padding:13px;margin:6px 0 12px;border:1px solid #326b45;border-radius:11px;background:#041109;color:white;font-size:15px;outline:none}
+textarea{min-height:85px;resize:vertical}label{font-size:13px;color:var(--mint)}
+button,.linkbtn{border:0;border-radius:11px;padding:13px 16px;background:linear-gradient(100deg,#16a34a,#86efac);color:#031309;font-weight:bold;cursor:pointer;font-size:14px;text-decoration:none;display:inline-block}
+button.secondary{background:#164b2a;color:#eaffef;border:1px solid #39764c}button.danger{background:#6b1e2d;color:#fff}button:disabled{opacity:.5}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.hidden{display:none!important}.notice{padding:11px;border-radius:10px;background:#12351f;color:#b8f7ca;font-size:13px;line-height:1.5;margin:10px 0}.warn{background:#392b0d;color:#ffe7a1}.err{color:#fda4af;font-size:13px;min-height:18px}.exercise{padding:14px;border:1px solid #285b39;border-radius:13px;margin:10px 0;background:#0a1c11}.exercise p{color:var(--muted);white-space:pre-wrap;line-height:1.5}.pill{font-size:11px;color:#b7f7ca;border:1px solid #326b45;padding:5px 8px;border-radius:30px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:15px 2px}.small{font-size:12px;color:var(--muted)}footer{text-align:center;color:#7da88a;font-size:11px;margin-top:25px}
+@media(max-width:520px){main{padding:12px}.panel{padding:14px}.row{flex-direction:column}.row>*{width:100%}}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+ <div class="tag">ONLINE COACHING · STATIC SKILLS · STRENGTH</div>
+ <h1>SHERBEK_WORKOUT</h1>
+ <div class="muted">Shaxsiy mashg‘ulot platformasi</div>
+</section>
+
+<section id="home" class="panel">
+ <header><h2>Yo‘nalishni tanlang</h2><button class="secondary" onclick="showAdminLogin()">ADMIN</button></header>
+ <div class="notice warn">Demo versiya: ma’lumotlar shu qurilma brauzerida saqlanadi. Haqiqiy internet xavfsizligi uchun keyin serverga ulash kerak.</div>
+ <div id="programs" class="grid"></div>
+</section>
+
+<section id="directionLogin" class="panel hidden">
+ <button class="secondary" onclick="goHome()">← Orqaga</button>
+ <h2 id="directionTitle" style="margin-top:15px">Yo‘nalish</h2>
+ <label>Yo‘nalish paroli</label><input id="directionPassword" type="password" placeholder="Parolni kiriting">
+ <button onclick="unlockDirection()">Kirish</button><div id="directionError" class="err"></div>
+</section>
+
+<section id="directionPage" class="panel hidden">
+ <header><div><span class="pill">YO‘NALISH OCHILDI</span><h2 id="openDirectionTitle" style="margin-top:9px"></h2></div><button class="secondary" onclick="goHome()">Chiqish</button></header>
+ <p class="muted">Mashqni ochish uchun uning alohida parolini kiriting.</p>
+ <div id="exerciseList"></div>
+</section>
+
+<section id="exerciseLogin" class="panel hidden">
+ <button class="secondary" onclick="backToDirection()">← Orqaga</button>
+ <h2 id="exerciseLoginTitle" style="margin-top:15px"></h2>
+ <label>Mashq paroli</label><input id="exercisePassword" type="password" placeholder="Mashq parolini kiriting">
+ <button onclick="unlockExercise()">Mashqni ochish</button><div id="exerciseError" class="err"></div>
+</section>
+
+<section id="exercisePage" class="panel hidden">
+ <button class="secondary" onclick="backToDirection()">← Yo‘nalishga qaytish</button>
+ <div id="exerciseContent" style="margin-top:16px"></div>
+</section>
+
+<section id="adminLogin" class="panel hidden">
+ <button class="secondary" onclick="goHome()">← Orqaga</button>
+ <h2 style="margin-top:15px">Murabbiy Admin paneli</h2>
+ <div id="firstAdminSetup" class="hidden">
+  <div class="notice">Birinchi marta ochilyapti. Admin parolini o‘zingiz yarating.</div>
+  <label>Yangi admin paroli</label><input id="newAdminPassword" type="password" placeholder="Kamida 8 belgi">
+  <button onclick="createAdmin()">Admin parolini yaratish</button>
+ </div>
+ <div id="adminSignIn">
+  <label>Admin paroli</label><input id="adminPassword" type="password" placeholder="Admin parolini kiriting">
+  <button onclick="loginAdmin()">Kirish</button>
+ </div>
+ <div id="adminLoginError" class="err"></div>
+</section>
+
+<section id="adminPage" class="panel hidden">
+ <header><div><span class="pill">MURABBIY</span><h2 style="margin-top:9px">Admin panel</h2></div><button class="secondary" onclick="goHome()">Chiqish</button></header>
+ <div class="notice">Bu yerdagi o‘zgarishlar shu brauzerda saqlanadi. Admin parolini va yo‘nalish/mashq parollarini boshqalar bilan ulashmang.</div>
+ <h3>Yo‘nalish parolini o‘zgartirish</h3>
+ <label>Yo‘nalish</label><select id="adminProgram"></select>
+ <label>Yangi yo‘nalish paroli</label><input id="programPassword" type="password" placeholder="Yangi parol">
+ <button class="secondary" onclick="saveProgramPassword()">Yo‘nalish parolini saqlash</button>
+ <hr style="border-color:#244b31;margin:22px 0">
+ <h3>Mashq qo‘shish</h3>
+ <label>Mashq nomi</label><input id="exName" placeholder="Masalan: Planche hold">
+ <label>Mashq tavsifi / ko‘rsatma</label><textarea id="exDesc" placeholder="Bajarish tartibi, texnika va eslatmalar"></textarea>
+ <div class="row">
+  <div><label>Set</label><input id="exSets" placeholder="Masalan: 4"></div>
+  <div><label>Takror / vaqt</label><input id="exReps" placeholder="Masalan: 8 yoki 10 soniya"></div>
+  <div><label>Dam olish</label><input id="exRest" placeholder="Masalan: 2 daqiqa"></div>
+ </div>
+ <label>Video havolasi (ixtiyoriy)</label><input id="exVideo" placeholder="https://...">
+ <label>Mashq uchun alohida parol</label><input id="exPassword" type="password" placeholder="Mashq paroli">
+ <button onclick="addExercise()">Mashqni saqlash</button><div id="adminMessage" class="small"></div>
+ <hr style="border-color:#244b31;margin:22px 0">
+ <h3>Mashqlarni boshqarish</h3><div id="adminExerciseList"></div>
+ <hr style="border-color:#244b31;margin:22px 0">
+ <h3>Admin parolini almashtirish</h3>
+ <label>Yangi admin paroli</label><input id="changeAdminPassword" type="password" placeholder="Kamida 8 belgi">
+ <button class="secondary" onclick="changeAdmin()">Admin parolini almashtirish</button>
+</section>
+<footer>SHERBEK_WORKOUT · ONLINE COACHING</footer>
+</main>
+<script>
+const PROGRAMS=["Handstand","Basic Calisthenics","Muscle Up","Full Planche & Front Lever","Maltese","One Arm Front Lever","Elite Training / Elite Skills"];
+const STORE="sherbek_workout_demo_v1";
+let data=loadData(), selectedProgram="", selectedExercise=null, openProgram="";
+function loadData(){try{return JSON.parse(localStorage.getItem(STORE))||{adminHash:"",programs:{}}}catch(e){return {adminHash:"",programs:{}}}}
+function save(){localStorage.setItem(STORE,JSON.stringify(data))}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return "h"+(h>>>0).toString(16)}
+function ensure(){PROGRAMS.forEach((p,i)=>{if(!data.programs[p])data.programs[p]={passwordHash:hash("start-"+i+"-change-me"),exercises:[]}});save()}
+ensure();
+function show(id){["home","directionLogin","directionPage","exerciseLogin","exercisePage","adminLogin","adminPage"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id))}
+function renderPrograms(){document.getElementById("programs").innerHTML=PROGRAMS.map((p,i)=>`<button class="card" onclick="chooseProgram(${i})"><b>${p}</b><span class="price">${data.programs[p].exercises.length} ta mashq</span></button>`).join("");document.getElementById("adminProgram").innerHTML=PROGRAMS.map(p=>`<option>${p}</option>`).join("")}
+function goHome(){show("home");renderPrograms();clearPasswords()}
+function clearPasswords(){["directionPassword","exercisePassword","adminPassword","newAdminPassword"].forEach(id=>{let e=document.getElementById(id);if(e)e.value=""})}
+function chooseProgram(i){selectedProgram=PROGRAMS[i];document.getElementById("directionTitle").textContent=selectedProgram;document.getElementById("directionPassword").value="";document.getElementById("directionError").textContent="";show("directionLogin")}
+function unlockDirection(){if(hash(document.getElementById("directionPassword").value)!==data.programs[selectedProgram].passwordHash){document.getElementById("directionError").textContent="Parol noto‘g‘ri.";return}openProgram=selectedProgram;renderExercises();show("directionPage")}
+function renderExercises(){document.getElementById("openDirectionTitle").textContent=openProgram;let list=data.programs[openProgram].exercises;document.getElementById("exerciseList").innerHTML=list.length?list.map((e,i)=>`<div class="exercise"><b>${escapeHtml(e.name)}</b><div class="small">Alohida parol bilan himoyalangan</div><button style="margin-top:10px" onclick="chooseExercise(${i})">Mashqni ochish</button></div>`).join(""):'<p class="muted">Hozircha mashq kiritilmagan. Murabbiy Admin paneldan qo‘shadi.</p>'}
+function chooseExercise(i){selectedExercise=i;document.getElementById("exerciseLoginTitle").textContent=data.programs[openProgram].exercises[i].name;document.getElementById("exercisePassword").value="";document.getElementById("exerciseError").textContent="";show("exerciseLogin")}
+function unlockExercise(){let e=data.programs[openProgram].exercises[selectedExercise];if(hash(document.getElementById("exercisePassword").value)!==e.passwordHash){document.getElementById("exerciseError").textContent="Mashq paroli noto‘g‘ri.";return}document.getElementById("exerciseContent").innerHTML=`<h2>${escapeHtml(e.name)}</h2><div class="grid"><div class="exercise"><span class="small">SET</span><h3>${escapeHtml(e.sets||"—")}</h3></div><div class="exercise"><span class="small">TAKROR / VAQT</span><h3>${escapeHtml(e.reps||"—")}</h3></div><div class="exercise"><span class="small">DAM OLISH</span><h3>${escapeHtml(e.rest||"—")}</h3></div></div><div class="exercise"><b>Ko‘rsatma</b><p>${escapeHtml(e.desc||"Ko‘rsatma kiritilmagan.")}</p></div>${e.video?`<a class="linkbtn" href="${safeUrl(e.video)}" target="_blank" rel="noopener">VIDEOni ochish</a>`:""}`;show("exercisePage")}
+function backToDirection(){renderExercises();show("directionPage")}
+function showAdminLogin(){let first=!data.adminHash;document.getElementById("firstAdminSetup").classList.toggle("hidden",!first);document.getElementById("adminSignIn").classList.toggle("hidden",first);document.getElementById("adminLoginError").textContent="";show("adminLogin")}
+function createAdmin(){let p=document.getElementById("newAdminPassword").value;if(p.length<8){document.getElementById("adminLoginError").textContent="Parol kamida 8 belgidan iborat bo‘lsin.";return}data.adminHash=hash(p);save();document.getElementById("adminLoginError").textContent="Admin paroli yaratildi. Endi kiring.";document.getElementById("firstAdminSetup").classList.add("hidden");document.getElementById("adminSignIn").classList.remove("hidden")}
+function loginAdmin(){if(hash(document.getElementById("adminPassword").value)!==data.adminHash){document.getElementById("adminLoginError").textContent="Admin paroli noto‘g‘ri.";return}renderAdminExercises();show("adminPage")}
+function saveProgramPassword(){let p=document.getElementById("adminProgram").value,v=document.getElementById("programPassword").value;if(v.length<4){msg("Yo‘nalish paroli kamida 4 belgi bo‘lsin.");return}data.programs[p].passwordHash=hash(v);save();document.getElementById("programPassword").value="";msg("Yo‘nalish paroli saqlandi.")}
+function addExercise(){let p=document.getElementById("adminProgram").value,n=document.getElementById("exName").value.trim(),pw=document.getElementById("exPassword").value;if(!n||pw.length<4){msg("Mashq nomi va kamida 4 belgili parol kiriting.");return}data.programs[p].exercises.push({id:Date.now(),name:n,desc:document.getElementById("exDesc").value,sets:document.getElementById("exSets").value,reps:document.getElementById("exReps").value,rest:document.getElementById("exRest").value,video:document.getElementById("exVideo").value,passwordHash:hash(pw)});save();["exName","exDesc","exSets","exReps","exRest","exVideo","exPassword"].forEach(id=>document.getElementById(id).value="");renderAdminExercises();renderPrograms();msg("Mashq saqlandi!")}
+function renderAdminExercises(){let p=document.getElementById("adminProgram").value||PROGRAMS[0];document.getElementById("adminExerciseList").innerHTML=PROGRAMS.map(p=>`<h3 style="margin-top:16px">${escapeHtml(p)}</h3>`+(data.programs[p].exercises.length?data.programs[p].exercises.map(e=>`<div class="exercise"><b>${escapeHtml(e.name)}</b><button class="danger" style="float:right;padding:7px 10px" onclick="deleteExercise('${p.replace(/'/g,"\\'")}',${e.id})">O‘chirish</button><div class="small">Set: ${escapeHtml(e.sets||"—")} · Takror: ${escapeHtml(e.reps||"—")}</div></div>`).join(""):'<div class="small">Mashq yo‘q</div>')).join("");}
+function deleteExercise(p,id){if(!confirm("Ushbu mashq o‘chirilsinmi?"))return;data.programs[p].exercises=data.programs[p].exercises.filter(e=>e.id!==id);save();renderAdminExercises();renderPrograms()}
+function changeAdmin(){let p=document.getElementById("changeAdminPassword").value;if(p.length<8){msg("Yangi parol kamida 8 belgi bo‘lsin.");return}data.adminHash=hash(p);save();document.getElementById("changeAdminPassword").value="";msg("Admin paroli almashtirildi.")}
+function msg(t){document.getElementById("adminMessage").textContent=t}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeUrl(s){try{let u=new URL(s);return ["https:","http:"].includes(u.protocol)?u.href:"#"}catch(e){return "#"}}
+document.getElementById("adminProgram").addEventListener("change",renderAdminExercises);
+renderPrograms();
+</script>
+</body>
+</html>
